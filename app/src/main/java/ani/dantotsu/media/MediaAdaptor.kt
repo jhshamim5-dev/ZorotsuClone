@@ -10,14 +10,20 @@ import ani.dantotsu.R
 import ani.dantotsu.databinding.ItemMediaCompactBinding
 
 class MediaAdaptor(
-    private val mediaList: List<Media>,
-    private val showCountdown: Boolean = false
+    private val mediaList: List<Media>
 ) : RecyclerView.Adapter<MediaAdaptor.MediaViewHolder>() {
 
-    inner class MediaViewHolder(val binding: ItemMediaCompactBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class MediaViewHolder(val binding: ItemMediaCompactBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
-        return MediaViewHolder(ItemMediaCompactBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MediaViewHolder(
+            ItemMediaCompactBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: MediaViewHolder, position: Int) {
@@ -27,6 +33,19 @@ class MediaAdaptor(
             .apply(RequestOptions().placeholder(R.drawable.linear_gradient_bg))
             .into(holder.binding.itemCompactImage)
         holder.binding.itemCompactTitle.text = media.title
+
+        // Optional extras
+        media.meanScore?.let {
+            holder.binding.itemCompactScore.text = it.toString()
+            holder.binding.itemCompactScoreBG.visibility = View.VISIBLE
+        } ?: run {
+            holder.binding.itemCompactScoreBG.visibility = View.GONE
+        }
+        media.nextEpisode?.let {
+            holder.binding.itemCompactOngoing.visibility = View.VISIBLE
+        } ?: run {
+            holder.binding.itemCompactOngoing.visibility = View.GONE
+        }
     }
 
     override fun getItemCount() = mediaList.size
